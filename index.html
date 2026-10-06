@@ -1,152 +1,2537 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<title>API Tests — Laboratório HTTP</title>
-<style>
-:root{--bg:#181818;--surface:#222;--surface-2:#2b2b2b;--border:#383838;--text:#f5f5f5;--muted:#a8a8a8;--orange:#ff7a00;--orange-hover:#ff941f;--orange-soft:rgba(255,122,0,.14);--success:#54d98c;--danger:#ff6b6b;--radius:16px;--shadow:0 20px 50px rgba(0,0,0,.28)}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top right,rgba(255,122,0,.08),transparent 28%),var(--bg);color:var(--text)}
-button,input,select{font:inherit}.page{width:min(1220px,calc(100% - 32px));margin:0 auto;padding:36px 0 56px}
-.hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;margin-bottom:20px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--orange);font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 6px var(--orange-soft)}
-h1{margin:0;font-size:clamp(2rem,5vw,3.2rem);line-height:.98;letter-spacing:-.04em}.hero p{margin:12px 0 0;color:var(--muted);max-width:700px;line-height:1.6}
-.active-base{min-width:240px;padding:12px 14px;border:1px solid var(--border);background:var(--surface);border-radius:12px;color:var(--muted);font-size:.8rem}.active-base strong{display:block;color:var(--orange);font-size:.95rem;margin-top:3px;overflow:hidden;text-overflow:ellipsis}
-.tabs{display:flex;gap:7px;overflow-x:auto;padding:6px;margin-bottom:20px;border:1px solid var(--border);background:var(--surface);border-radius:14px;scrollbar-width:thin}.tab{flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--muted);padding:10px 14px;border-radius:9px;font-weight:800;cursor:pointer}.tab:hover{color:var(--text);background:var(--surface-2)}.tab.active{color:var(--orange);background:var(--orange-soft);border-color:rgba(255,122,0,.24)}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.9fr);gap:20px;align-items:start}.card{background:linear-gradient(180deg,rgba(255,255,255,.018),transparent),var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.card-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:19px 22px;border-bottom:1px solid var(--border)}.card-header h2{margin:0;font-size:1rem}.card-header span{color:var(--muted);font-size:.8rem}.card-body{padding:22px}
-.tab-panel{display:none}.tab-panel.active{display:block}.section-title{margin:0 0 6px;font-size:1.18rem}.lead{margin:0 0 20px;color:var(--muted);line-height:1.55;font-size:.9rem}
-.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{color:#d8d8d8;font-size:.82rem;font-weight:700}.field input,.field select{width:100%;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:11px;padding:12px 13px;outline:none;transition:.18s}.field input:focus,.field select:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-soft);background:#303030}.field input::placeholder{color:#757575}
-input[type=file]{padding:9px}input[type=file]::file-selector-button{border:0;border-radius:8px;padding:8px 10px;margin-right:10px;background:var(--orange-soft);color:var(--orange);font-weight:800;cursor:pointer}
-.btn{border:1px solid var(--border);border-radius:11px;padding:12px 15px;cursor:pointer;font-weight:800;transition:.15s}.btn:hover{transform:translateY(-1px)}.btn:disabled{cursor:not-allowed;opacity:.45;transform:none}.btn-primary{background:var(--orange);color:#191919;border-color:var(--orange)}.btn-primary:hover:not(:disabled){background:var(--orange-hover)}.btn-secondary{background:var(--surface-2);color:var(--text)}.btn-secondary:hover:not(:disabled){border-color:#555;background:#333}.btn-danger{background:transparent;color:var(--danger);border-color:rgba(255,107,107,.35)}.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.method{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:4px 7px;border-radius:7px;margin-right:8px;background:var(--orange-soft);color:var(--orange);font-size:.72rem;letter-spacing:.04em}
-.hint{margin:14px 0 0;color:var(--muted);font-size:.82rem;line-height:1.55}.divider{height:1px;background:var(--border);margin:22px 0}
-.url-box{margin-top:18px}.url-row{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px}.method-label{display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--orange-soft);color:var(--orange);font-weight:900;font-size:.8rem}.url-input{width:100%;border:1px solid var(--border);background:#171717;color:#ddd;border-radius:10px;padding:12px 13px;font: .82rem/1.4 "SFMono-Regular",Consolas,monospace;outline:none}.url-input:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)}.manual-note{margin-top:7px;color:var(--muted);font-size:.76rem}
-.database-toolbar,.upload-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}.upload-row{margin-top:14px}.count{color:var(--orange);font-weight:800}
-.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}.mode-btn{border:1px solid var(--border);background:var(--surface-2);color:var(--muted);padding:12px;border-radius:10px;font-weight:800;cursor:pointer}.mode-btn.active{color:var(--orange);border-color:rgba(255,122,0,.4);background:var(--orange-soft)}
-.payload{margin-top:16px;padding:13px;border:1px solid var(--border);background:#171717;border-radius:10px;color:#ccc;font:.8rem/1.5 "SFMono-Regular",Consolas,monospace;white-space:pre-wrap}
-.response-card{height:calc(100vh - 48px);max-height:900px;min-height:540px;position:sticky;top:24px;display:flex;flex-direction:column}.response-card .card-header{flex:0 0 auto}.response-meta{display:flex;align-items:center;gap:10px}.response-meta strong{font-size:.82rem}.response-meta .ok{color:var(--success)}.response-meta .error{color:var(--danger)}
-.console-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}.console-stat{background:#1d1d1d;padding:10px 12px}.console-stat small{display:block;color:var(--muted);font-size:.67rem;text-transform:uppercase;letter-spacing:.08em}.console-stat strong{display:block;margin-top:3px;font-size:.82rem;overflow:hidden;text-overflow:ellipsis}
-.console-tabs{display:flex;background:#171717;border-bottom:1px solid var(--border)}.console-tab{border:0;background:transparent;color:var(--muted);padding:10px 14px;font-weight:800;font-size:.78rem;cursor:pointer;border-bottom:2px solid transparent}.console-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
-.console-content{min-height:0;flex:1 1 auto;display:flex}.console-pane{display:none;min-width:0;width:100%}.console-pane.active{display:flex}.console-pane pre{width:100%;margin:0;min-height:0;flex:1;padding:18px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;background:#121212;color:#f2f2f2;font:.85rem/1.6 "SFMono-Regular",Consolas,monospace;white-space:pre-wrap;word-break:break-word}
-.danger-zone{padding:14px;border:1px solid rgba(255,107,107,.22);background:rgba(255,107,107,.04);border-radius:12px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.response-card{position:static;height:60vh;min-height:380px;max-height:620px}.hero{align-items:flex-start;flex-direction:column}.active-base{width:100%}}
-@media(max-width:560px){.page{width:min(100% - 20px,1220px);padding-top:26px}.fields,.database-toolbar,.upload-row{grid-template-columns:1fr}.card-body,.card-header{padding-left:16px;padding-right:16px}.url-row{grid-template-columns:1fr}.console-summary{grid-template-columns:1fr}.mode-switch{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+
+    <title>API Tests — Mobiliária</title>
+
+    <style>
+        :root {
+            --bg: #2a5185;
+            --surface: #345866;
+            --surface-2: #2b2b2b;
+            --border: #09ffea;
+            --text: #ffffff;
+            --muted: #a8a8a8;
+            --orange: #ff7a00;
+            --orange-hover: #ff941f;
+            --orange-soft: rgba(255, 122, 0, .14);
+            --success: #54d98c;
+            --danger: #ff6b6b;
+            --radius: 16px;
+            --shadow: 0 20px 50px rgba(0, 0, 0, .28);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+                BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(255, 122, 0, .08),
+                    transparent 28%
+                ),
+                var(--bg);
+
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .page {
+            width: min(1220px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 36px 0 56px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--orange);
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+        .eyebrow:before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--orange);
+            box-shadow: 0 0 0 6px var(--orange-soft);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: .98;
+            letter-spacing: -.04em;
+        }
+
+        .hero p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            max-width: 700px;
+            line-height: 1.6;
+        }
+
+        .active-base {
+            min-width: 240px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .active-base strong {
+            display: block;
+            color: var(--orange);
+            font-size: .95rem;
+            margin-top: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            padding: 6px;
+            margin-bottom: 20px;
+
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: 14px;
+        }
+
+        .tab {
+            flex: 0 0 auto;
+
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--muted);
+
+            padding: 10px 14px;
+            border-radius: 9px;
+
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .tab:hover {
+            color: var(--text);
+            background: var(--surface-2);
+        }
+
+        .tab.active {
+            color: var(--orange);
+            background: var(--orange-soft);
+            border-color: rgba(255, 122, 0, .24);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(380px, .9fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .018), transparent),
+                var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+
+            padding: 19px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .card-header span {
+            color: var(--muted);
+            font-size: .8rem;
+        }
+
+        .card-body {
+            padding: 22px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .section-title {
+            margin: 0 0 6px;
+            font-size: 1.18rem;
+        }
+
+        .lead {
+            margin: 0 0 20px;
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: .9rem;
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            color: #d8d8d8;
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--text);
+
+            border-radius: 11px;
+            padding: 12px 13px;
+
+            outline: none;
+            transition: .18s;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px var(--orange-soft);
+            background: #303030;
+        }
+
+        .field input::placeholder {
+            color: #757575;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 12px 15px;
+
+            cursor: pointer;
+            font-weight: 800;
+            transition: .15s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: .45;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: #555;
+            background: #333;
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border-color: rgba(255, 107, 107, .35);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .method {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 58px;
+            padding: 4px 7px;
+
+            border-radius: 7px;
+            margin-right: 8px;
+
+            background: var(--orange-soft);
+            color: var(--orange);
+
+            font-size: .72rem;
+            letter-spacing: .04em;
+        }
+
+        .hint {
+            margin: 14px 0 0;
+            color: var(--muted);
+            font-size: .82rem;
+            line-height: 1.55;
+        }
+
+        .url-box {
+            margin-top: 18px;
+        }
+
+        .url-row {
+            display: grid;
+            grid-template-columns: 72px minmax(0, 1fr);
+            gap: 8px;
+        }
+
+        .method-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+            background: var(--orange-soft);
+            color: var(--orange);
+
+            font-weight: 900;
+            font-size: .8rem;
+        }
+
+        .url-input {
+            width: 100%;
+
+            border: 1px solid var(--border);
+            background: #171717;
+            color: #ddd;
+
+            border-radius: 10px;
+            padding: 12px 13px;
+
+            font: .82rem/1.4 "SFMono-Regular", Consolas, monospace;
+            outline: none;
+        }
+
+        .url-input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px var(--orange-soft);
+        }
+
+        .manual-note {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: .76rem;
+        }
+
+        .database-toolbar,
+        .upload-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .upload-row {
+            margin-top: 14px;
+        }
+
+        .count {
+            color: var(--orange);
+            font-weight: 800;
+        }
+
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .mode-btn {
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--muted);
+
+            padding: 12px;
+            border-radius: 10px;
+
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            color: var(--orange);
+            border-color: rgba(255, 122, 0, .4);
+            background: var(--orange-soft);
+        }
+
+        .payload {
+            margin-top: 16px;
+
+            padding: 13px;
+            border: 1px solid var(--border);
+            background: #171717;
+            border-radius: 10px;
+
+            color: #ccc;
+
+            font: .8rem/1.5 "SFMono-Regular", Consolas, monospace;
+            white-space: pre-wrap;
+        }
+
+        .response-card {
+            height: calc(100vh - 48px);
+            max-height: 900px;
+            min-height: 540px;
+
+            position: sticky;
+            top: 24px;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .response-card .card-header {
+            flex: 0 0 auto;
+        }
+
+        .response-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .response-meta strong {
+            font-size: .82rem;
+        }
+
+        .response-meta .ok {
+            color: var(--success);
+        }
+
+        .response-meta .error {
+            color: var(--danger);
+        }
+
+        .console-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .console-stat {
+            background: #1d1d1d;
+            padding: 10px 12px;
+        }
+
+        .console-stat small {
+            display: block;
+            color: var(--muted);
+            font-size: .67rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .console-stat strong {
+            display: block;
+            margin-top: 3px;
+            font-size: .82rem;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .console-tabs {
+            display: flex;
+            background: #171717;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .console-tab {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+
+            padding: 10px 14px;
+
+            font-weight: 800;
+            font-size: .78rem;
+
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .console-tab.active {
+            color: var(--orange);
+            border-bottom-color: var(--orange);
+        }
+
+        .console-content {
+            min-height: 0;
+            flex: 1 1 auto;
+            display: flex;
+        }
+
+        .console-pane {
+            display: none;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .console-pane.active {
+            display: flex;
+        }
+
+        .console-pane pre {
+            width: 100%;
+            margin: 0;
+            min-height: 0;
+            flex: 1;
+
+            padding: 18px;
+            overflow: auto;
+
+            background: #121212;
+            color: #f2f2f2;
+
+            font: .85rem/1.6 "SFMono-Regular", Consolas, monospace;
+
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .danger-zone {
+            padding: 14px;
+
+            border: 1px solid rgba(255, 107, 107, .22);
+            background: rgba(255, 107, 107, .04);
+
+            border-radius: 12px;
+        }
+
+        @media(max-width:900px) {
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .response-card {
+                position: static;
+                height: 60vh;
+                min-height: 380px;
+                max-height: 620px;
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .active-base {
+                width: 100%;
+            }
+        }
+
+        @media(max-width:560px) {
+
+            .page {
+                width: min(100% - 20px, 1220px);
+                padding-top: 26px;
+            }
+
+            .fields,
+            .database-toolbar,
+            .upload-row {
+                grid-template-columns: 1fr;
+            }
+
+            .card-body,
+            .card-header {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .url-row {
+                grid-template-columns: 1fr;
+            }
+
+            .console-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-switch {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
 <main class="page">
-<section class="hero">
-<div><div class="eyebrow">API Tests</div><h1>Laboratório HTTP</h1><p>Aprenda cada método HTTP em seu próprio espaço e acompanhe requisição e resposta em tempo real.</p></div>
-<div class="active-base">Base ativa<strong id="activeBaseName">dados.json</strong></div>
-</section>
 
-<nav class="tabs" aria-label="Funcionalidades">
-<button class="tab active" data-tab="base" onclick="abrirAba('base')">Base de Dados</button>
-<button class="tab" data-tab="get" onclick="abrirAba('get')">GET</button>
-<button class="tab" data-tab="post" onclick="abrirAba('post')">POST</button>
-<button class="tab" data-tab="edit" onclick="abrirAba('edit')">PUT / PATCH</button>
-<button class="tab" data-tab="delete" onclick="abrirAba('delete')">DELETE</button>
-</nav>
+    <section class="hero">
 
-<section class="layout">
-<div class="card">
-<div class="tab-panel active" id="tab-base">
-<div class="card-header"><h2>Base de Dados</h2><span><span id="basesCount" class="count">0/5</span> anexadas</span></div>
-<div class="card-body">
-<h3 class="section-title">Escolha onde praticar</h3><p class="lead">A base selecionada é usada pelas abas GET, POST, PUT/PATCH e DELETE.</p>
-<div class="database-toolbar"><div class="field"><label for="baseSelect">Base ativa</label><select id="baseSelect" onchange="trocarBase()"><option value="dados.json">Base padrão</option></select></div><button id="removeBaseBtn" class="btn btn-danger" onclick="removerBase()" disabled>Remover base</button></div>
-<div class="upload-row"><div class="field"><label for="baseFile">Anexar base JSON</label><input type="file" id="baseFile" accept=".json,application/json"></div><button id="uploadBtn" class="btn btn-primary" onclick="enviarBase()">Anexar JSON</button></div>
-<p class="hint">Até 5 bases adicionais, com no máximo 2 MB cada. Cada usuário deve possuir id, nome, email e idade.</p>
-</div></div>
+        <div>
 
-<div class="tab-panel" id="tab-get">
-<div class="card-header"><h2><span class="method">GET</span>Consultar dados</h2><span>Leitura + query parameters</span></div>
-<div class="card-body">
-<h3 class="section-title">Listar, filtrar ou buscar</h3><p class="lead">Use os controles para montar a URL ou edite a URL manualmente para praticar query parameters por conta própria.</p>
-<div class="fields">
-<div class="field"><label for="getId">ID específico</label><input type="number" id="getId" min="1" placeholder="Ex.: 10" oninput="montarUrlGet()"></div>
-<div class="field"><label for="filtroNome">Nome contém</label><input type="text" id="filtroNome" placeholder="Ex.: maria" oninput="montarUrlGet()"></div>
-<div class="field"><label for="filtroEmail">E-mail contém</label><input type="text" id="filtroEmail" placeholder="@email.com" oninput="montarUrlGet()"></div>
-<div class="field"><label for="filtroIdade">Idade exata</label><input type="number" id="filtroIdade" min="0" max="120" placeholder="Ex.: 25" oninput="montarUrlGet()"></div>
-<div class="field"><label for="sort">Ordenar por</label><select id="sort" onchange="montarUrlGet()"><option value="id">ID</option><option value="nome">Nome</option><option value="email">E-mail</option><option value="idade">Idade</option></select></div>
-<div class="field"><label for="order">Direção</label><select id="order" onchange="montarUrlGet()"><option value="asc">Crescente</option><option value="desc">Decrescente</option></select></div>
-</div>
-<div class="url-box"><label class="field"><span>URL da requisição — editável</span><div class="url-row"><span class="method-label">GET</span><input class="url-input" id="getUrl" spellcheck="false" oninput="urlGetManual=true"></div></label><div class="manual-note">Ao editar este campo, o sistema executará exatamente a URL informada. Alterar algum filtro volta a gerar a URL automaticamente.</div></div>
-<div class="btn-row"><button class="btn btn-secondary" onclick="executarGet()"><span class="method">GET</span>Enviar requisição</button><button class="btn btn-secondary" onclick="limparGet()">Limpar filtros</button></div>
-</div></div>
+            <div class="eyebrow">
+                API Tests
+            </div>
 
-<div class="tab-panel" id="tab-post">
-<div class="card-header"><h2><span class="method">POST</span>Criar usuário</h2><span>201 Created</span></div>
-<div class="card-body">
-<h3 class="section-title">Novo recurso</h3><p class="lead">Preencha os dados que serão enviados no corpo JSON da requisição.</p>
-<div class="fields"><div class="field"><label for="postNome">Nome</label><input id="postNome" maxlength="100" placeholder="Maria Silva" oninput="previewPost()"></div><div class="field"><label for="postEmail">E-mail</label><input id="postEmail" type="email" placeholder="maria@email.com" oninput="previewPost()"></div><div class="field"><label for="postIdade">Idade</label><input id="postIdade" type="number" min="0" max="120" placeholder="28" oninput="previewPost()"></div></div>
-<div class="payload" id="postPayload">{}</div><div class="btn-row"><button class="btn btn-secondary" onclick="criar()"><span class="method">POST</span>Criar usuário</button></div>
-</div></div>
+            <h1>
+                Mobiliária Do Seu Zé
+            </h1>
 
-<div class="tab-panel" id="tab-edit">
-<div class="card-header"><h2>PUT / PATCH</h2><span>Atualização completa ou parcial</span></div>
-<div class="card-body">
-<div class="mode-switch"><button id="modePut" class="mode-btn active" onclick="selecionarEdicao('PUT')">PUT — substituição completa</button><button id="modePatch" class="mode-btn" onclick="selecionarEdicao('PATCH')">PATCH — atualização parcial</button></div>
-<p class="lead" id="editHelp">PUT exige nome, e-mail e idade e substitui os dados editáveis do recurso.</p>
-<div class="fields"><div class="field"><label for="editId">ID</label><input id="editId" type="number" min="1" placeholder="Ex.: 12"></div><div class="field"><label for="editIdade">Idade</label><input id="editIdade" type="number" min="0" max="120" placeholder="28" oninput="previewEdit()"></div><div class="field"><label for="editNome">Nome</label><input id="editNome" maxlength="100" placeholder="João Silva" oninput="previewEdit()"></div><div class="field"><label for="editEmail">E-mail</label><input id="editEmail" type="email" placeholder="joao@email.com" oninput="previewEdit()"></div></div>
-<div class="payload" id="editPayload">{}</div><div class="btn-row"><button class="btn btn-secondary" onclick="enviarEdicao()"><span class="method" id="editMethodBadge">PUT</span><span id="editButtonText">Enviar PUT</span></button></div>
-</div></div>
+            <p>
+                pesquise/filtre/procure e compre mobilia para sua casa!
+            </p>
 
-<div class="tab-panel" id="tab-delete">
-<div class="card-header"><h2><span class="method">DELETE</span>Excluir usuário</h2><span>Remoção de recurso</span></div>
-<div class="card-body"><h3 class="section-title">Excluir por ID</h3><p class="lead">Informe o identificador. A interface pedirá confirmação antes de enviar o DELETE.</p><div class="danger-zone"><div class="field"><label for="deleteId">ID do usuário</label><input id="deleteId" type="number" min="1" placeholder="Ex.: 15"></div><div class="btn-row"><button class="btn btn-danger" onclick="excluir()"><span class="method">DELETE</span>Excluir usuário</button></div></div></div>
-</div>
-</div>
+        </div>
 
-<article class="card response-card">
-<div class="card-header"><h2>Console HTTP</h2><div class="response-meta"><strong id="statusText">Aguardando requisição</strong></div></div>
-<div class="console-summary"><div class="console-stat"><small>Método</small><strong id="consoleMethod">—</strong></div><div class="console-stat"><small>Status</small><strong id="consoleStatus">—</strong></div><div class="console-stat"><small>Tempo</small><strong id="consoleTime">—</strong></div></div>
-<div class="console-tabs"><button class="console-tab" id="requestTabBtn" onclick="abrirConsole('request')">Requisição</button><button class="console-tab active" id="responseTabBtn" onclick="abrirConsole('response')">Resposta</button></div>
-<div class="console-content"><div class="console-pane" id="console-request"><pre id="requestOutput">Nenhuma requisição enviada.</pre></div><div class="console-pane active" id="console-response"><pre id="resultado">Carregando bases disponíveis...</pre></div></div>
-</article>
-</section>
+        <div class="active-base">
+
+            Base ativa
+
+            <strong id="activeBaseName">
+                dados.json
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <nav class="tabs">
+
+        <button
+            class="tab active"
+            data-tab="base"
+            onclick="abrirAba('base')">
+            Base de Dados
+        </button>
+
+        <button
+            class="tab"
+            data-tab="get"
+            onclick="abrirAba('get')">
+            GET
+        </button>
+
+        <button
+            class="tab"
+            data-tab="post"
+            onclick="abrirAba('post')">
+            POST
+        </button>
+
+        <button
+            class="tab"
+            data-tab="edit"
+            onclick="abrirAba('edit')">
+            PUT / PATCH
+        </button>
+
+        <button
+            class="tab"
+            data-tab="delete"
+            onclick="abrirAba('delete')">
+            DELETE
+        </button>
+
+    </nav>
+
+
+    <section class="layout">
+
+        <div class="card">
+
+
+            <!-- BASE -->
+
+            <div
+                class="tab-panel active"
+                id="tab-base">
+
+                <div class="card-header">
+
+                    <h2>
+                        Base de Dados
+                    </h2>
+
+                    <span>
+                        <span
+                            id="basesCount"
+                            class="count">
+                            0/5
+                        </span>
+                        anexadas
+                    </span>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <h3 class="section-title">
+                        Base de objetos
+                    </h3>
+
+                    <p class="lead">
+                        Utilize o arquivo dados.json como base para as
+                        consultas e operações da API.
+                    </p>
+
+
+                    <div class="database-toolbar">
+
+                        <div class="field">
+
+                            <label for="baseSelect">
+                                Base ativa
+                            </label>
+
+                            <select
+                                id="baseSelect"
+                                onchange="trocarBase()">
+
+                                <option value="dados.json">
+                                    Base padrão (dados.json)
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            id="removeBaseBtn"
+                            class="btn btn-danger"
+                            onclick="removerBase()"
+                            disabled>
+
+                            Remover base
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="upload-row">
+
+                        <div class="field">
+
+                            <label for="baseFile">
+                                Anexar base JSON
+                            </label>
+
+                            <input
+                                type="file"
+                                id="baseFile"
+                                accept=".json,application/json">
+
+                        </div>
+
+
+                        <button
+                            id="uploadBtn"
+                            class="btn btn-primary"
+                            onclick="enviarBase()">
+
+                            Anexar JSON
+
+                        </button>
+
+                    </div>
+
+
+                    <p class="hint">
+                        Estrutura esperada:
+                        id, nomeObjeto, setor e tipo.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- GET -->
+
+            <div
+                class="tab-panel"
+                id="tab-get">
+
+                <div class="card-header">
+
+                    <h2>
+                        <span class="method">
+                            GET
+                        </span>
+
+                        Consultar objetos
+                    </h2>
+
+                    <span>
+                        Leitura + filtros
+                    </span>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <h3 class="section-title">
+                        Procurar e filtrar objetos
+                    </h3>
+
+                    <p class="lead">
+                        Você pode pesquisar por ID, nome do objeto,
+                        setor ou tipo.
+                    </p>
+
+
+                    <div class="fields">
+
+
+                        <div class="field">
+
+                            <label for="getId">
+                                ID específico
+                            </label>
+
+                            <input
+                                type="number"
+                                id="getId"
+                                min="1"
+                                placeholder="Ex.: 10"
+                                oninput="montarUrlGet()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="filtroNomeObjeto">
+                                Nome do objeto
+                            </label>
+
+                            <input
+                                type="text"
+                                id="filtroNomeObjeto"
+                                placeholder="Ex.: mesa"
+                                oninput="montarUrlGet()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="filtroSetor">
+                                Setor
+                            </label>
+
+                            <input
+                                type="text"
+                                id="filtroSetor"
+                                placeholder="Ex.: Mobiliária"
+                                oninput="montarUrlGet()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="filtroTipo">
+                                Tipo
+                            </label>
+
+                            <input
+                                type="text"
+                                id="filtroTipo"
+                                placeholder="Ex.: Madeira de Carvalho"
+                                oninput="montarUrlGet()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="sort">
+                                Ordenar por
+                            </label>
+
+                            <select
+                                id="sort"
+                                onchange="montarUrlGet()">
+
+                                <option value="id">
+                                    ID
+                                </option>
+
+                                <option value="nomeObjeto">
+                                    Nome do objeto
+                                </option>
+
+                                <option value="setor">
+                                    Setor
+                                </option>
+
+                                <option value="tipo">
+                                    Tipo
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="order">
+                                Direção
+                            </label>
+
+                            <select
+                                id="order"
+                                onchange="montarUrlGet()">
+
+                                <option value="asc">
+                                    Crescente
+                                </option>
+
+                                <option value="desc">
+                                    Decrescente
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="url-box">
+
+                        <label class="field">
+
+                            <span>
+                                URL da requisição — editável
+                            </span>
+
+
+                            <div class="url-row">
+
+                                <span class="method-label">
+                                    GET
+                                </span>
+
+                                <input
+                                    class="url-input"
+                                    id="getUrl"
+                                    spellcheck="false"
+                                    oninput="urlGetManual=true">
+
+                            </div>
+
+                        </label>
+
+
+                        <div class="manual-note">
+                            Você também pode editar diretamente a URL
+                            para testar parâmetros HTTP.
+                        </div>
+
+                    </div>
+
+
+                    <div class="btn-row">
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="executarGet()">
+
+                            <span class="method">
+                                GET
+                            </span>
+
+                            Pesquisar
+
+                        </button>
+
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="limparGet()">
+
+                            Limpar filtros
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- POST -->
+
+            <div
+                class="tab-panel"
+                id="tab-post">
+
+                <div class="card-header">
+
+                    <h2>
+                        <span class="method">
+                            POST
+                        </span>
+
+                        Criar objeto
+                    </h2>
+
+                    <span>
+                        201 Created
+                    </span>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <h3 class="section-title">
+                        Novo objeto
+                    </h3>
+
+                    <p class="lead">
+                        Cadastre um novo objeto na base JSON.
+                    </p>
+
+
+                    <div class="fields">
+
+
+                        <div class="field">
+
+                            <label for="postNomeObjeto">
+                                Nome do objeto
+                            </label>
+
+                            <input
+                                id="postNomeObjeto"
+                                maxlength="100"
+                                placeholder="Mesa"
+                                oninput="previewPost()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="postSetor">
+                                Setor
+                            </label>
+
+                            <input
+                                id="postSetor"
+                                maxlength="100"
+                                placeholder="Mobiliária"
+                                oninput="previewPost()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="postTipo">
+                                Tipo
+                            </label>
+
+                            <input
+                                id="postTipo"
+                                maxlength="100"
+                                placeholder="Madeira de Carvalho"
+                                oninput="previewPost()">
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="payload"
+                        id="postPayload">
+                        {}
+                    </div>
+
+
+                    <div class="btn-row">
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="criar()">
+
+                            <span class="method">
+                                POST
+                            </span>
+
+                            Criar objeto
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PUT / PATCH -->
+
+            <div
+                class="tab-panel"
+                id="tab-edit">
+
+                <div class="card-header">
+
+                    <h2>
+                        PUT / PATCH
+                    </h2>
+
+                    <span>
+                        Atualização completa ou parcial
+                    </span>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="mode-switch">
+
+                        <button
+                            id="modePut"
+                            class="mode-btn active"
+                            onclick="selecionarEdicao('PUT')">
+
+                            PUT — substituição completa
+
+                        </button>
+
+
+                        <button
+                            id="modePatch"
+                            class="mode-btn"
+                            onclick="selecionarEdicao('PATCH')">
+
+                            PATCH — atualização parcial
+
+                        </button>
+
+                    </div>
+
+
+                    <p
+                        class="lead"
+                        id="editHelp">
+
+                        PUT exige nome do objeto, setor e tipo.
+
+                    </p>
+
+
+                    <div class="fields">
+
+
+                        <div class="field">
+
+                            <label for="editId">
+                                ID
+                            </label>
+
+                            <input
+                                id="editId"
+                                type="number"
+                                min="1"
+                                placeholder="Ex.: 12">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="editNomeObjeto">
+                                Nome do objeto
+                            </label>
+
+                            <input
+                                id="editNomeObjeto"
+                                maxlength="100"
+                                placeholder="Mesa"
+                                oninput="previewEdit()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="editSetor">
+                                Setor
+                            </label>
+
+                            <input
+                                id="editSetor"
+                                maxlength="100"
+                                placeholder="Mobiliária"
+                                oninput="previewEdit()">
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="editTipo">
+                                Tipo
+                            </label>
+
+                            <input
+                                id="editTipo"
+                                maxlength="100"
+                                placeholder="Madeira de Carvalho"
+                                oninput="previewEdit()">
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="payload"
+                        id="editPayload">
+                        {}
+                    </div>
+
+
+                    <div class="btn-row">
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="enviarEdicao()">
+
+                            <span
+                                class="method"
+                                id="editMethodBadge">
+                                PUT
+                            </span>
+
+                            <span id="editButtonText">
+                                Enviar PUT
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DELETE -->
+
+            <div
+                class="tab-panel"
+                id="tab-delete">
+
+                <div class="card-header">
+
+                    <h2>
+
+                        <span class="method">
+                            DELETE
+                        </span>
+
+                        Excluir objeto
+
+                    </h2>
+
+                    <span>
+                        Remoção de recurso
+                    </span>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <h3 class="section-title">
+                        Excluir por ID
+                    </h3>
+
+                    <p class="lead">
+                        Informe o ID do objeto que deseja remover.
+                    </p>
+
+
+                    <div class="danger-zone">
+
+                        <div class="field">
+
+                            <label for="deleteId">
+                                ID do objeto
+                            </label>
+
+                            <input
+                                id="deleteId"
+                                type="number"
+                                min="1"
+                                placeholder="Ex.: 15">
+
+                        </div>
+
+
+                        <div class="btn-row">
+
+                            <button
+                                class="btn btn-danger"
+                                onclick="excluir()">
+
+                                <span class="method">
+                                    DELETE
+                                </span>
+
+                                Excluir objeto
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CONSOLE -->
+
+        <article class="card response-card">
+
+            <div class="card-header">
+
+                <h2>
+                    Console HTTP
+                </h2>
+
+                <div class="response-meta">
+
+                    <strong id="statusText">
+                        Aguardando requisição
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="console-summary">
+
+                <div class="console-stat">
+
+                    <small>
+                        Método
+                    </small>
+
+                    <strong id="consoleMethod">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="console-stat">
+
+                    <small>
+                        Status
+                    </small>
+
+                    <strong id="consoleStatus">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="console-stat">
+
+                    <small>
+                        Tempo
+                    </small>
+
+                    <strong id="consoleTime">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="console-tabs">
+
+                <button
+                    class="console-tab"
+                    id="requestTabBtn"
+                    onclick="abrirConsole('request')">
+
+                    Requisição
+
+                </button>
+
+
+                <button
+                    class="console-tab active"
+                    id="responseTabBtn"
+                    onclick="abrirConsole('response')">
+
+                    Resposta
+
+                </button>
+
+            </div>
+
+
+            <div class="console-content">
+
+                <div
+                    class="console-pane"
+                    id="console-request">
+
+                    <pre id="requestOutput">
+Nenhuma requisição enviada.
+                    </pre>
+
+                </div>
+
+
+                <div
+                    class="console-pane active"
+                    id="console-response">
+
+                    <pre id="resultado">
+Carregando base...
+                    </pre>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
 </main>
 
+
+
 <script>
-const API='api.php';let editMode='PUT';let urlGetManual=false;
-function valor(id){return document.getElementById(id).value.trim()}
-function baseAtual(){return document.getElementById('baseSelect').value||'dados.json'}
-function abrirAba(nome){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===nome));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));document.getElementById('tab-'+nome).classList.add('active')}
-function abrirConsole(nome){document.querySelectorAll('.console-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.console-pane').forEach(x=>x.classList.remove('active'));document.getElementById(nome+'TabBtn').classList.add('active');document.getElementById('console-'+nome).classList.add('active')}
-function mostrar(dados){document.getElementById('resultado').textContent=typeof dados==='string'?dados:JSON.stringify(dados,null,2)}
-function definirStatus(texto,tipo=''){const s=document.getElementById('statusText');s.textContent=texto;s.className=tipo}
-function urlApi(params={}){const q=new URLSearchParams({base:baseAtual(),...params});return API+'?'+q.toString()}
-function montarUrlGet(){urlGetManual=false;const p={};if(valor('getId'))p.id=valor('getId');else{if(valor('filtroNome'))p.nome=valor('filtroNome');if(valor('filtroEmail'))p.email=valor('filtroEmail');if(valor('filtroIdade'))p.idade=valor('filtroIdade');p.sort=valor('sort');p.order=valor('order')}document.getElementById('getUrl').value=urlApi(p)}
-function limparGet(){['getId','filtroNome','filtroEmail','filtroIdade'].forEach(id=>document.getElementById(id).value='');document.getElementById('sort').value='id';document.getElementById('order').value='asc';montarUrlGet()}
-function formatBody(body){if(!body)return'(sem corpo)';try{return JSON.stringify(JSON.parse(body),null,2)}catch{return body}}
-async function requisicao(url,opcoes={}){
- const metodo=opcoes.method||'GET',inicio=performance.now();definirStatus('Enviando...');abrirConsole('response');
- document.getElementById('consoleMethod').textContent=metodo;document.getElementById('consoleStatus').textContent='...';document.getElementById('consoleTime').textContent='...';
- document.getElementById('requestOutput').textContent=metodo+' '+url+'\n\nHeaders:\n'+JSON.stringify(opcoes.headers||{},null,2)+'\n\nBody:\n'+formatBody(opcoes.body);
- try{const resposta=await fetch(url,opcoes),texto=await resposta.text(),tempo=Math.round(performance.now()-inicio);let dados;try{dados=JSON.parse(texto)}catch{dados=texto}
- definirStatus(resposta.status+' '+(resposta.ok?'Sucesso':'Erro'),resposta.ok?'ok':'error');document.getElementById('consoleStatus').textContent=resposta.status+' '+resposta.statusText;document.getElementById('consoleTime').textContent=tempo+' ms';mostrar(dados);return{resposta,dados}}
- catch(e){const tempo=Math.round(performance.now()-inicio);definirStatus('Falha de conexão','error');document.getElementById('consoleStatus').textContent='Falha';document.getElementById('consoleTime').textContent=tempo+' ms';mostrar({erro:e.message});return null}}
-async function carregarBases(baseParaSelecionar=null){
- try{const r=await fetch(API+'?action=bases'),texto=await r.text();let d;try{d=JSON.parse(texto)}catch{throw new Error('Resposta inválida ao listar bases: '+texto)}
- if(!r.ok){definirStatus('Erro ao carregar bases','error');mostrar(d);return}
- const s=document.getElementById('baseSelect'),anterior=baseParaSelecionar||s.value||'dados.json';s.innerHTML='';
- d.bases.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.textContent=b.padrao?'Base padrão (dados.json)':b.arquivo;s.appendChild(o)});
- s.value=d.bases.some(b=>b.id===anterior)?anterior:'dados.json';document.getElementById('basesCount').textContent=d.uploads_utilizados+'/'+d.max_uploads;document.getElementById('uploadBtn').disabled=d.uploads_utilizados>=d.max_uploads;atualizarEstadoBase();montarUrlGet();
- if(!baseParaSelecionar){definirStatus('Bases carregadas','ok');mostrar({mensagem:'Selecione uma aba para começar.',base_ativa:baseAtual(),bases_disponiveis:d.bases})}}
- catch(e){definirStatus('Falha ao carregar bases','error');mostrar({erro:e.message})}}
-function atualizarEstadoBase(){document.getElementById('removeBaseBtn').disabled=baseAtual()==='dados.json';document.getElementById('activeBaseName').textContent=baseAtual()}
-function trocarBase(){atualizarEstadoBase();montarUrlGet();definirStatus('Base selecionada','ok');mostrar({mensagem:'As próximas requisições usarão esta base.',base:baseAtual()})}
-async function enviarBase(){const input=document.getElementById('baseFile');if(!input.files.length){definirStatus('Selecione um JSON','error');mostrar({erro:'Escolha um arquivo .json antes de anexar.'});return}const fd=new FormData();fd.append('base',input.files[0]);const res=await requisicao(API+'?action=upload-base',{method:'POST',body:fd});if(res?.resposta.ok){input.value='';await carregarBases(res.dados.base.id)}}
-async function removerBase(){const b=baseAtual();if(b==='dados.json'||!confirm('Remover a base "'+b+'"? Esta ação exclui o arquivo do servidor.'))return;const res=await requisicao(API+'?action=delete-base&base='+encodeURIComponent(b),{method:'DELETE'});if(res?.resposta.ok)await carregarBases('dados.json')}
-function executarGet(){let url=valor('getUrl');if(!url){montarUrlGet();url=valor('getUrl')}requisicao(url)}
-function previewPost(){const u={nome:valor('postNome'),email:valor('postEmail'),idade:valor('postIdade')===''?null:Number(valor('postIdade'))};document.getElementById('postPayload').textContent=JSON.stringify(u,null,2)}
-function criar(){const u={nome:valor('postNome'),email:valor('postEmail'),idade:valor('postIdade')===''?null:Number(valor('postIdade'))};requisicao(urlApi(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(u)})}
-function selecionarEdicao(m){editMode=m;document.getElementById('modePut').classList.toggle('active',m==='PUT');document.getElementById('modePatch').classList.toggle('active',m==='PATCH');document.getElementById('editMethodBadge').textContent=m;document.getElementById('editButtonText').textContent='Enviar '+m;document.getElementById('editHelp').textContent=m==='PUT'?'PUT exige nome, e-mail e idade e substitui os dados editáveis do recurso.':'PATCH envia somente os campos preenchidos, preservando os demais.';previewEdit()}
-function editBody(){if(editMode==='PUT')return{nome:valor('editNome'),email:valor('editEmail'),idade:valor('editIdade')===''?null:Number(valor('editIdade'))};const u={};if(valor('editNome'))u.nome=valor('editNome');if(valor('editEmail'))u.email=valor('editEmail');if(valor('editIdade')!=='')u.idade=Number(valor('editIdade'));return u}
-function previewEdit(){document.getElementById('editPayload').textContent=JSON.stringify(editBody(),null,2)}
-function enviarEdicao(){const id=valor('editId');if(!id){definirStatus('Informe um ID','error');mostrar({erro:'Informe o ID que deseja atualizar.'});return}requisicao(urlApi({id}),{method:editMode,headers:{'Content-Type':'application/json'},body:JSON.stringify(editBody())})}
-function excluir(){const id=valor('deleteId');if(!id){definirStatus('Informe um ID','error');mostrar({erro:'Informe o ID que deseja excluir.'});return}if(!confirm('Confirma a exclusão do usuário ID '+id+' da base '+baseAtual()+'?'))return;requisicao(urlApi({id}),{method:'DELETE'})}
-previewPost();previewEdit();carregarBases();
+
+const API = 'api.php';
+
+let editMode = 'PUT';
+let urlGetManual = false;
+
+
+/* =========================
+   FUNÇÕES BÁSICAS
+========================= */
+
+function valor(id) {
+
+    return document
+        .getElementById(id)
+        .value
+        .trim();
+
+}
+
+
+function baseAtual() {
+
+    return document
+        .getElementById('baseSelect')
+        .value || 'dados.json';
+
+}
+
+
+/* =========================
+   ABAS
+========================= */
+
+function abrirAba(nome) {
+
+    document
+        .querySelectorAll('.tab')
+        .forEach(x =>
+            x.classList.toggle(
+                'active',
+                x.dataset.tab === nome
+            )
+        );
+
+    document
+        .querySelectorAll('.tab-panel')
+        .forEach(x =>
+            x.classList.remove('active')
+        );
+
+    document
+        .getElementById('tab-' + nome)
+        .classList.add('active');
+
+}
+
+
+function abrirConsole(nome) {
+
+    document
+        .querySelectorAll('.console-tab')
+        .forEach(x =>
+            x.classList.remove('active')
+        );
+
+    document
+        .querySelectorAll('.console-pane')
+        .forEach(x =>
+            x.classList.remove('active')
+        );
+
+    document
+        .getElementById(nome + 'TabBtn')
+        .classList.add('active');
+
+    document
+        .getElementById('console-' + nome)
+        .classList.add('active');
+
+}
+
+
+/* =========================
+   CONSOLE
+========================= */
+
+function mostrar(dados) {
+
+    document
+        .getElementById('resultado')
+        .textContent =
+        typeof dados === 'string'
+            ? dados
+            : JSON.stringify(dados, null, 2);
+
+}
+
+
+function definirStatus(texto, tipo = '') {
+
+    const s =
+        document.getElementById('statusText');
+
+    s.textContent = texto;
+    s.className = tipo;
+
+}
+
+
+function formatBody(body) {
+
+    if (!body)
+        return '(sem corpo)';
+
+    try {
+
+        return JSON.stringify(
+            JSON.parse(body),
+            null,
+            2
+        );
+
+    } catch {
+
+        return body;
+
+    }
+
+}
+
+
+/* =========================
+   URL DA API
+========================= */
+
+function urlApi(params = {}) {
+
+    const q =
+        new URLSearchParams({
+
+            base: baseAtual(),
+
+            ...params
+
+        });
+
+    return API + '?' + q.toString();
+
+}
+
+
+/* =========================
+   GET
+========================= */
+
+function montarUrlGet() {
+
+    urlGetManual = false;
+
+    const p = {};
+
+    if (valor('getId')) {
+
+        p.id = valor('getId');
+
+    } else {
+
+        if (valor('filtroNomeObjeto'))
+            p.nomeObjeto =
+                valor('filtroNomeObjeto');
+
+        if (valor('filtroSetor'))
+            p.setor =
+                valor('filtroSetor');
+
+        if (valor('filtroTipo'))
+            p.tipo =
+                valor('filtroTipo');
+
+        p.sort = valor('sort');
+        p.order = valor('order');
+
+    }
+
+    document
+        .getElementById('getUrl')
+        .value = urlApi(p);
+
+}
+
+
+/*
+   Limpa os filtros do GET
+*/
+
+function limparGet() {
+
+    [
+        'getId',
+        'filtroNomeObjeto',
+        'filtroSetor',
+        'filtroTipo'
+    ]
+    .forEach(id =>
+        document.getElementById(id).value = ''
+    );
+
+    document.getElementById('sort').value = 'id';
+
+    document.getElementById('order').value = 'asc';
+
+    montarUrlGet();
+
+}
+
+
+/*
+   Executa GET
+*/
+
+function executarGet() {
+
+    let url =
+        valor('getUrl');
+
+    if (!url) {
+
+        montarUrlGet();
+
+        url = valor('getUrl');
+
+    }
+
+    requisicao(url);
+
+}
+
+
+/* =========================
+   POST
+========================= */
+
+function dadosPost() {
+
+    return {
+
+        nomeObjeto:
+            valor('postNomeObjeto'),
+
+        setor:
+            valor('postSetor'),
+
+        tipo:
+            valor('postTipo')
+
+    };
+
+}
+
+
+function previewPost() {
+
+    document
+        .getElementById('postPayload')
+        .textContent =
+        JSON.stringify(
+            dadosPost(),
+            null,
+            2
+        );
+
+}
+
+
+function criar() {
+
+    const objeto =
+        dadosPost();
+
+    requisicao(
+
+        urlApi(),
+
+        {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type':
+                    'application/json'
+            },
+
+            body:
+                JSON.stringify(objeto)
+
+        }
+
+    );
+
+}
+
+
+/* =========================
+   PUT / PATCH
+========================= */
+
+function selecionarEdicao(m) {
+
+    editMode = m;
+
+    document
+        .getElementById('modePut')
+        .classList.toggle(
+            'active',
+            m === 'PUT'
+        );
+
+    document
+        .getElementById('modePatch')
+        .classList.toggle(
+            'active',
+            m === 'PATCH'
+        );
+
+
+    document
+        .getElementById('editMethodBadge')
+        .textContent = m;
+
+
+    document
+        .getElementById('editButtonText')
+        .textContent =
+        'Enviar ' + m;
+
+
+    document
+        .getElementById('editHelp')
+        .textContent =
+
+        m === 'PUT'
+
+            ? 'PUT exige nome do objeto, setor e tipo e substitui os dados do recurso.'
+
+            : 'PATCH envia somente os campos preenchidos, preservando os demais.';
+
+
+    previewEdit();
+
+}
+
+
+function editBody() {
+
+    if (editMode === 'PUT') {
+
+        return {
+
+            nomeObjeto:
+                valor('editNomeObjeto'),
+
+            setor:
+                valor('editSetor'),
+
+            tipo:
+                valor('editTipo')
+
+        };
+
+    }
+
+
+    const objeto = {};
+
+
+    if (valor('editNomeObjeto'))
+        objeto.nomeObjeto =
+            valor('editNomeObjeto');
+
+
+    if (valor('editSetor'))
+        objeto.setor =
+            valor('editSetor');
+
+
+    if (valor('editTipo'))
+        objeto.tipo =
+            valor('editTipo');
+
+
+    return objeto;
+
+}
+
+
+function previewEdit() {
+
+    document
+        .getElementById('editPayload')
+        .textContent =
+        JSON.stringify(
+            editBody(),
+            null,
+            2
+        );
+
+}
+
+
+function enviarEdicao() {
+
+    const id =
+        valor('editId');
+
+
+    if (!id) {
+
+        definirStatus(
+            'Informe um ID',
+            'error'
+        );
+
+        mostrar({
+
+            erro:
+                'Informe o ID que deseja atualizar.'
+
+        });
+
+        return;
+
+    }
+
+
+    requisicao(
+
+        urlApi({ id }),
+
+        {
+
+            method: editMode,
+
+            headers: {
+
+                'Content-Type':
+                    'application/json'
+
+            },
+
+            body:
+                JSON.stringify(
+                    editBody()
+                )
+
+        }
+
+    );
+
+}
+
+
+/* =========================
+   DELETE
+========================= */
+
+function excluir() {
+
+    const id =
+        valor('deleteId');
+
+
+    if (!id) {
+
+        definirStatus(
+            'Informe um ID',
+            'error'
+        );
+
+        mostrar({
+
+            erro:
+                'Informe o ID que deseja excluir.'
+
+        });
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            'Confirma a exclusão do objeto ID '
+            + id
+            + ' da base '
+            + baseAtual()
+            + '?'
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    requisicao(
+
+        urlApi({ id }),
+
+        {
+            method: 'DELETE'
+        }
+
+    );
+
+}
+
+
+/* =========================
+   REQUISIÇÃO HTTP
+========================= */
+
+async function requisicao(
+    url,
+    opcoes = {}
+) {
+
+    const metodo =
+        opcoes.method || 'GET';
+
+    const inicio =
+        performance.now();
+
+
+    definirStatus('Enviando...');
+
+    abrirConsole('response');
+
+
+    document
+        .getElementById('consoleMethod')
+        .textContent = metodo;
+
+
+    document
+        .getElementById('consoleStatus')
+        .textContent = '...';
+
+
+    document
+        .getElementById('consoleTime')
+        .textContent = '...';
+
+
+    document
+        .getElementById('requestOutput')
+        .textContent =
+
+        metodo
+        + ' '
+        + url
+        + '\n\nHeaders:\n'
+        + JSON.stringify(
+            opcoes.headers || {},
+            null,
+            2
+        )
+        + '\n\nBody:\n'
+        + formatBody(opcoes.body);
+
+
+    try {
+
+        const resposta =
+            await fetch(
+                url,
+                opcoes
+            );
+
+
+        const texto =
+            await resposta.text();
+
+
+        const tempo =
+            Math.round(
+                performance.now()
+                - inicio
+            );
+
+
+        let dados;
+
+
+        try {
+
+            dados =
+                JSON.parse(texto);
+
+        } catch {
+
+            dados = texto;
+
+        }
+
+
+        definirStatus(
+
+            resposta.status
+            + ' '
+            + (
+                resposta.ok
+                    ? 'Sucesso'
+                    : 'Erro'
+            ),
+
+            resposta.ok
+                ? 'ok'
+                : 'error'
+
+        );
+
+
+        document
+            .getElementById('consoleStatus')
+            .textContent =
+
+            resposta.status
+            + ' '
+            + resposta.statusText;
+
+
+        document
+            .getElementById('consoleTime')
+            .textContent =
+            tempo + ' ms';
+
+
+        mostrar(dados);
+
+
+        return {
+
+            resposta,
+            dados
+
+        };
+
+    }
+
+
+    catch (e) {
+
+        const tempo =
+            Math.round(
+                performance.now()
+                - inicio
+            );
+
+
+        definirStatus(
+            'Falha de conexão',
+            'error'
+        );
+
+
+        document
+            .getElementById('consoleStatus')
+            .textContent =
+            'Falha';
+
+
+        document
+            .getElementById('consoleTime')
+            .textContent =
+            tempo + ' ms';
+
+
+        mostrar({
+
+            erro:
+                e.message
+
+        });
+
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================
+   BASES
+========================= */
+
+async function carregarBases(
+    baseParaSelecionar = null
+) {
+
+    try {
+
+        const r =
+            await fetch(
+                API + '?action=bases'
+            );
+
+
+        const texto =
+            await r.text();
+
+
+        let d;
+
+
+        try {
+
+            d =
+                JSON.parse(texto);
+
+        } catch {
+
+            throw new Error(
+                'Resposta inválida ao listar bases: '
+                + texto
+            );
+
+        }
+
+
+        if (!r.ok) {
+
+            definirStatus(
+                'Erro ao carregar bases',
+                'error'
+            );
+
+            mostrar(d);
+
+            return;
+
+        }
+
+
+        const s =
+            document.getElementById(
+                'baseSelect'
+            );
+
+
+        const anterior =
+            baseParaSelecionar
+            || s.value
+            || 'dados.json';
+
+
+        s.innerHTML = '';
+
+
+        d.bases.forEach(b => {
+
+            const o =
+                document.createElement(
+                    'option'
+                );
+
+
+            o.value = b.id;
+
+
+            o.textContent =
+                b.padrao
+                    ? 'Base padrão (dados.json)'
+                    : b.arquivo;
+
+
+            s.appendChild(o);
+
+        });
+
+
+        s.value =
+            d.bases.some(
+                b => b.id === anterior
+            )
+                ? anterior
+                : 'dados.json';
+
+
+        document
+            .getElementById('basesCount')
+            .textContent =
+
+            d.uploads_utilizados
+            + '/'
+            + d.max_uploads;
+
+
+        document
+            .getElementById('uploadBtn')
+            .disabled =
+            d.uploads_utilizados
+            >= d.max_uploads;
+
+
+        atualizarEstadoBase();
+
+        montarUrlGet();
+
+
+        if (!baseParaSelecionar) {
+
+            definirStatus(
+                'Base carregada',
+                'ok'
+            );
+
+
+            mostrar({
+
+                mensagem:
+                    'Selecione GET para pesquisar objetos.',
+
+                base_ativa:
+                    baseAtual(),
+
+                total_bases:
+                    d.bases.length
+
+            });
+
+        }
+
+    }
+
+
+    catch (e) {
+
+        definirStatus(
+            'Falha ao carregar bases',
+            'error'
+        );
+
+
+        mostrar({
+
+            erro:
+                e.message
+
+        });
+
+    }
+
+}
+
+
+function atualizarEstadoBase() {
+
+    document
+        .getElementById('removeBaseBtn')
+        .disabled =
+        baseAtual() === 'dados.json';
+
+
+    document
+        .getElementById('activeBaseName')
+        .textContent =
+        baseAtual();
+
+}
+
+
+function trocarBase() {
+
+    atualizarEstadoBase();
+
+    montarUrlGet();
+
+
+    definirStatus(
+        'Base selecionada',
+        'ok'
+    );
+
+
+    mostrar({
+
+        mensagem:
+            'As próximas requisições usarão esta base.',
+
+        base:
+            baseAtual()
+
+    });
+
+}
+
+
+async function enviarBase() {
+
+    const input =
+        document.getElementById(
+            'baseFile'
+        );
+
+
+    if (!input.files.length) {
+
+        definirStatus(
+            'Selecione um JSON',
+            'error'
+        );
+
+
+        mostrar({
+
+            erro:
+                'Escolha um arquivo .json antes de anexar.'
+
+        });
+
+
+        return;
+
+    }
+
+
+    const fd =
+        new FormData();
+
+
+    fd.append(
+        'base',
+        input.files[0]
+    );
+
+
+    const res =
+        await requisicao(
+
+            API + '?action=upload-base',
+
+            {
+
+                method: 'POST',
+
+                body: fd
+
+            }
+
+        );
+
+
+    if (res?.resposta.ok) {
+
+        input.value = '';
+
+        await carregarBases(
+            res.dados.base.id
+        );
+
+    }
+
+}
+
+
+async function removerBase() {
+
+    const b =
+        baseAtual();
+
+
+    if (
+        b === 'dados.json'
+        ||
+        !confirm(
+            'Remover a base "'
+            + b
+            + '"?'
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const res =
+        await requisicao(
+
+            API
+            + '?action=delete-base&base='
+            + encodeURIComponent(b),
+
+            {
+
+                method: 'DELETE'
+
+            }
+
+        );
+
+
+    if (res?.resposta.ok) {
+
+        await carregarBases(
+            'dados.json'
+        );
+
+    }
+
+}
+
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+previewPost();
+
+previewEdit();
+
+carregarBases();
+
 </script>
+
 </body>
 </html>

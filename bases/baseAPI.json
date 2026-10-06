@@ -1,25 +1,22 @@
- [{
+[
+    {
         "id": 1,
         "nomeObjeto": "Mesa",
         "setor": "Mobiliária",
-        "Tipo": "Madeira de Carvalho"
+        "tipo": "Madeira de Carvalho"
     },
     {
         "id": 2,
         "nomeObjeto": "Cadeira",
         "setor": "Mobiliária",
         "tipo": "Madeira de Carvalho"
-
     },
     {
         "id": 3,
         "nomeObjeto": "estante",
         "setor": "Mobiliária",
         "tipo": "Madeira de Carvalho"
-
-
     },
-
     {
         "id": 4,
         "nomeObjeto": "Guarda-Roupas",
@@ -31,15 +28,12 @@
         "nomeObjeto": "Sofá",
         "setor": "Mobiliária",
         "tipo": "Lã Azul"
-
     },
     {
         "id": 6,
         "nomeObjeto": "Apoiador",
         "setor": "Mobiliária",
         "tipo": "Madeira de Eucalipto"
-
-        
     },
     {
         "id": 7,
@@ -58,14 +52,12 @@
         "nomeObjeto": "estante",
         "setor": "Mobiliária",
         "tipo": "Ipê"
-
     },
-
     {
         "id": 10,
         "nomeObjeto": "Guarda-Roupas",
         "setor": "Mobiliária",
-         "tipo": "Ipê"
+        "tipo": "Ipê"
     },
     {
         "id": 11,
@@ -81,20 +73,20 @@
     },
     {
         "id": 13,
-        "nomeObjeto":"Guarda-Roupas",
-        "setor":"Mobiliária",
+        "nomeObjeto": "Guarda-Roupas",
+        "setor": "Mobiliária",
         "tipo": "Ipê"
     },
     {
         "id": 14,
-        "nomeObjeto":"Aparador",
-        "setor":"Mobiliária",
+        "nomeObjeto": "Aparador",
+        "setor": "Mobiliária",
         "tipo": "Ipê"
     },
     {
         "id": 15,
-        "nomeObjeto":"banco",
-        "setor":"Mobiliária",
+        "nomeObjeto": "banco",
+        "setor": "Mobiliária",
         "tipo": "Ipê"
     },
     {
@@ -111,21 +103,26 @@
     },
     {
         "id": 18,
-        "nomeObjeto":"Arroz-integral",
-        "setor":"Alimentação",
+        "nomeObjeto": "Arroz-integral",
+        "setor": "Alimentação",
         "tipo": "Integral"
     },
     {
         "id": 19,
-        "nomeObjeto":"Macarrão-Parafuso",
-        "setor":"Alimentação",
+        "nomeObjeto": "Macarrão-Parafuso",
+        "setor": "Alimentação",
         "tipo": "Massas"
     },
     {
         "id": 20,
-        "nomeObjeto":"Macarrão-Massini",
-        "setor":"Mobiliária",
+        "nomeObjeto": "Macarrão-Massini",
+        "setor": "Mobiliária",
         "tipo": "Massas"
+    },
+    {
+        "id": 21,
+        "nomeObjeto": "banco",
+        "setor": "Mobiliária",
+        "tipo": "Madeira normal"
     }
-
 ]
